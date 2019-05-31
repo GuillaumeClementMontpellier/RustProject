@@ -5,3 +5,4 @@ authors = ["ClementGuillaumePolytech <guillaume.clement@etu.umontpellier.fr>"]
 edition = "2018"
 
 [dependencies]
+rand = "0.3.14"
