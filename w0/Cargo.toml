@@ -1,0 +1,7 @@
+[package]
+name = "w0"
+version = "0.1.0"
+authors = ["ClementGuillaumePolytech <guillaume.clement@etu.umontpellier.fr>"]
+edition = "2018"
+
+[dependencies]
