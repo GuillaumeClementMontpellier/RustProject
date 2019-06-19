@@ -2,27 +2,23 @@
 
 use crate::{
 	objects::{
-		line::Line,	
+		Element,	
 		Intersect,
 	},
 	utils::constants::{
-		SCREEN_SIZE, 
 		SCENE_SIZE, 
 		PI
 	},
 };
 
 use ggez::{
-	Context,graphics::{
-		self, 
-		DrawMode,
+	Context,
+	graphics::{
+		self,
 		Vector2,
 		Point2,
 	},
-	GameResult,
-	nalgebra::{
-		Rotation2,
-	}
+	GameResult
 };
 
 pub mod ray;
@@ -51,7 +47,7 @@ pub struct Camera{
 
 impl Camera{
 
-	pub fn new(x: f32, y: f32, dirx: f32, diry: f32) -> Camera{
+	pub fn new(x: f32, y: f32, dirx: f32, diry: f32, nb_rays: u32) -> Camera{
 
 
 		let len = (dirx*dirx+diry*diry).sqrt();
@@ -62,13 +58,13 @@ impl Camera{
 		Camera {
 			position ,
 			direction, 
-			fov: PI * 2.0 / 3.0 ,
-			nb_rays: 100
+			fov: PI / 4.0,
+			nb_rays,
 		}
 
 	}
 
-	pub fn cast_rays(&mut self, ctx: &mut Context, lines: &Vec<Line>) -> GameResult<()>{
+	pub fn cast_rays(&mut self, ctx: &mut Context, elem: &Vec<Element>, fish :bool) -> GameResult<()>{
 
 		graphics::set_color(ctx, [1.0, 1.0, 1.0, 0.3].into())?;
 
@@ -81,26 +77,21 @@ impl Camera{
 			pos += self.fov / (self.nb_rays as f32) ;
 		}
 
-		for angle in angles.iter(){
+		for (num,angle) in angles.iter().enumerate(){
 
-			let rot = Rotation2::new(*angle);
+			let mut ray = Ray::new(self.position, self.direction, *angle);
 
-			let dir = self.direction.clone();
-
-			let dir = rot * &dir;
-
-			let mut ray = Ray::new(self.position, dir);
-
-			for line in lines.iter(){
+			for line in elem.iter(){
 
 				match line.intersect(&ray){
+
 					Some(point) => {
-						if let Some(point2) = ray.min {
+						if let Some((point2, _cible)) = ray.min {
 							if point.dist_sq(&ray.depart) < point2.dist_sq(&ray.depart) {
-								ray.min = Some(point);
+								ray.min = Some((point, line));
 							}
 						} else {
-							ray.min = Some(point);
+							ray.min = Some((point, line));
 						}
 					},
 					None => {}
@@ -109,6 +100,8 @@ impl Camera{
 			}
 
 			ray.render(ctx)?;
+
+			ray.render_3d(ctx, num as f32, SCENE_SIZE.0 as f32 / (self.nb_rays as f32), fish)?;
 
 		}
 

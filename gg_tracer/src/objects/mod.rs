@@ -1,3 +1,7 @@
+
+use ggez::GameResult;
+use ggez::Context;
+use ggez::graphics::Color;
 use crate::Ray;
 
 use ggez::graphics::Point2;
@@ -6,11 +10,49 @@ pub mod line;
 
 use line::Line;
 
+pub enum Element{
+	LineIntersect(Line),
+}
+
 pub trait Intersect{
 	fn intersect(&self, ray: &Ray) -> Option<Point2>;
+	fn color(&self) -> Color ;
+}
+
+impl Intersect for Element{
+
+	fn color(&self) -> Color {
+		Element::color(self)
+	}
+
+	fn intersect(&self, ray: &Ray) -> Option<Point2>{
+		match self{
+			Element::LineIntersect(l) => l.intersect(ray),
+		}
+	}
+
+}
+
+impl  Element {
+
+	pub fn draw(&self, ctx: &mut Context) -> GameResult<()>{
+		match self{
+			Element::LineIntersect(l) => l.draw(ctx),
+		}
+	}
+
+	pub fn color(&self) -> Color{
+		match self{
+			Element::LineIntersect(l) => l.color,
+		}
+	}
 }
 
 impl Intersect for Line {
+
+	fn color(&self) -> Color {
+		self.color
+	}
 
 	fn intersect(&self, ray: &Ray) -> Option<Point2>{
 

@@ -1,4 +1,5 @@
 
+use ggez::graphics::Color;
 use ggez::{
 	graphics::{
 		self,
@@ -13,11 +14,12 @@ use crate::utils::constants::{
 
 pub struct Line{
 	pub points : [Point2; 2],
+	pub color: Color,
 }
 
 impl Line{
 
-	pub fn new(x1: f32, y1: f32, x2: f32, y2: f32) -> Line{
+	pub fn new(x1: f32, y1: f32, x2: f32, y2: f32, color: Color) -> Line{
 
 		let points = [ 
 		Point2::new(
@@ -28,13 +30,13 @@ impl Line{
 			y2 * SCENE_SIZE.1 as f32)
 		];
 
-		Line {points}
+		Line {points, color}
 
 	}
 
 	pub fn draw(&self, ctx: &mut Context) -> GameResult<()>{
 
-		graphics::line(ctx, &self.points, 2.0)?;
+		graphics::line(ctx, &self.points, (SCENE_SIZE.0 + SCENE_SIZE.1) as f32 / 500.0)?;
 
 		Ok(())
 
