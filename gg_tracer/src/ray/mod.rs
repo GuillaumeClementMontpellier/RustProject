@@ -17,6 +17,8 @@ use ggez::{
 		self,
 		Vector2,
 		Point2,
+		MeshBuilder,
+		DrawMode,
 	},
 	GameResult
 };
@@ -77,6 +79,10 @@ impl Camera{
 			pos += self.fov / (self.nb_rays as f32) ;
 		}
 
+		let mut mesh_line = MeshBuilder::new();
+
+		let mut mesh_cible = MeshBuilder::new();
+
 		for (num,angle) in angles.iter().enumerate(){
 
 			let mut ray = Ray::new(self.position, self.direction, *angle);
@@ -99,11 +105,33 @@ impl Camera{
 
 			}
 
-			ray.render(ctx)?;
+			//ray.render(ctx)?;
+
+			match ray.min {
+				Some((point, _cible)) => {
+
+					mesh_line.line(&[ray.depart, point], 1.5);
+
+					mesh_cible.circle(DrawMode::Fill, point, 2.0, 0.1);
+
+				},
+				None => {
+
+					mesh_line.line(&[ray.depart, ray.depart + ray.direction * 10.0 * SCENE_SIZE.0 as f32], 1.5);
+
+				}
+			}
 
 			ray.render_3d(ctx, num as f32, SCENE_SIZE.0 as f32 / (self.nb_rays as f32), fish)?;
 
 		}
+
+		let vue = mesh_line.build(ctx)?;
+		let circle = mesh_cible.build(ctx)?;
+
+
+		graphics::draw(ctx, &vue, Point2::origin(), 0.0).unwrap();
+		graphics::draw(ctx, &circle, Point2::origin(), 0.0).unwrap();
 
 		Ok(())
 

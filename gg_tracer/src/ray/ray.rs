@@ -97,7 +97,7 @@ impl<'a> Ray<'a> {
 
 		Ok(())
 	}
-
+/*
 	pub fn render(&self, ctx: &mut Context) -> GameResult<()> {
 
 		match self.min {
@@ -122,7 +122,7 @@ impl<'a> Ray<'a> {
 		Ok(())
 
 	}
-
+*/
 	pub fn verify(&self, pt: Point2) -> Option<Point2> {
 
 		let vec1 = self.depart.coords;

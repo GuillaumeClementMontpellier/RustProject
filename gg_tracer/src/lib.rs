@@ -63,7 +63,7 @@ impl GameState {
 
 	pub fn new() -> GameState {
 
-		let camera = Camera::new(SCENE_SIZE.0 as f32 / 2.0, SCENE_SIZE.0 as f32 / 2.0, 1.0, 0.0, SCENE_SIZE.0);
+		let camera = Camera::new(SCENE_SIZE.0 as f32 / 2.0, SCENE_SIZE.0 as f32 / 2.0, 1.0, 0.0, SCENE_SIZE.0 / 5);
 
 		let elems = vec!(
 			
