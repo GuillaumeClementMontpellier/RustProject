@@ -16,7 +16,8 @@ use ggez::{
 	nalgebra::{
 		Rotation2, 
 		Translation2
-	}
+	},
+	timer,
 };
 use std::time::{
 	Instant	
@@ -63,17 +64,17 @@ impl GameState {
 
 	pub fn new() -> GameState {
 
-		let camera = Camera::new(SCENE_SIZE.0 as f32 / 2.0, SCENE_SIZE.0 as f32 / 2.0, 1.0, 0.0, SCENE_SIZE.0 / 5);
+		let camera = Camera::new(SCENE_SIZE.0 as f32 / 2.0, SCENE_SIZE.0 as f32 / 2.0, 1.0, 0.0, SCENE_SIZE.0 );
 
 		let elems = vec!(
 			
-			Element::LineIntersect(Line::new(0.0,1.0,1.0,1.0, [1.0,1.0,1.0,1.0].into())),
-			Element::LineIntersect(Line::new(1.0,0.0,1.0,1.0,[1.0,1.0,1.0,1.0].into())),
-			Element::LineIntersect(Line::new(0.0,0.0,0.0, 1.0,[1.0,1.0,1.0,1.0].into())),
-			Element::LineIntersect(Line::new(0.0,0.0,1.0,0.0,[1.0,1.0,1.0,1.0].into())),
+			Element::Wall(Line::new(0.0,1.0,1.0,1.0, [1.0,1.0,1.0,1.0].into())),
+			Element::Wall(Line::new(1.0,0.0,1.0,1.0,[1.0,1.0,1.0,1.0].into())),
+			Element::Wall(Line::new(0.0,0.0,0.0, 1.0,[1.0,1.0,1.0,1.0].into())),
+			Element::Wall(Line::new(0.0,0.0,1.0,0.0,[1.0,1.0,1.0,1.0].into())),
 
-			Element::LineIntersect(Line::new(0.4,0.2,0.2,0.4,[0.0,1.0,0.0,1.0].into() )),
-			Element::LineIntersect(Line::new(0.2,0.4,0.1,0.2,[0.0,0.0,1.0,1.0].into() )),
+			Element::Wall(Line::new(0.4,0.2,0.2,0.4,[0.0,1.0,0.0,1.0].into() )),
+			Element::Wall(Line::new(0.2,0.4,0.1,0.2,[0.0,0.0,1.0,1.0].into() )),
 			);
 
 		GameState{
@@ -100,16 +101,18 @@ impl EventHandler for GameState{
 			ctx.quit()?;
 		}
 
-		let v = ((SCENE_SIZE.0 * SCENE_SIZE.0 + SCENE_SIZE.1 * SCENE_SIZE.1) as f32).sqrt() / 6.0;
+		let v = ((SCENE_SIZE.0 * SCENE_SIZE.0 + SCENE_SIZE.1 * SCENE_SIZE.1) as f32).sqrt() / 20.0;
 		// vitesse en pixel : diag / tps en sec pour traverser la diag
 
-		let now = Instant::now();
+		//let now = Instant::now();
 
-		self.dt = ( (now - self.last_update).as_millis() as f32) / 1000.0;
+		//self.dt = ( (now - self.last_update).as_millis() as f32) / 1000.0;
+
+		self.dt = ( timer::get_delta(ctx).as_millis() as f32) / 1000.0;
 
 		//println!(" ************ ups : {}", 1.0 / self.dt);
 
-		self.last_update = now;
+		//self.last_update = now;
 
 		let front = Translation2::from_vector(self.camera.direction * self.dt * v);
 
@@ -160,15 +163,13 @@ impl EventHandler for GameState{
 
 		self.last_draw = now;
 
-		println!("dps : {}", 1.0 / dt);*/
-
+		println!("dps : {}", 1.0 / dt);
+		*/
 		graphics::clear(ctx);
 
-		graphics::set_color(ctx, [1.0, 0.0, 0.0, 0.5].into())?;
+		graphics::set_color(ctx, [1.0, 0.0, 0.0, 0.4].into())?;
 
 		graphics::circle(ctx, DrawMode::Fill, self.camera.position , ((SCENE_SIZE.0 * SCENE_SIZE.0 + SCENE_SIZE.1 * SCENE_SIZE.1) as f32).sqrt() / 100.0, 0.1)?;
-
-		graphics::set_color(ctx, [1.0, 1.0, 1.0, 1.0].into())?;
 
 		for line in self.elems.iter(){
 			line.draw(ctx)?;
@@ -177,7 +178,7 @@ impl EventHandler for GameState{
 		self.camera.cast_rays(ctx, &self.elems, self.fish)?;
 
 		graphics::present(ctx);
-		ggez::timer::yield_now();
+		timer::yield_now();
 		Ok(())
 	}
 

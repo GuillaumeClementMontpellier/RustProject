@@ -106,18 +106,23 @@ impl Camera{
 			}
 
 			//ray.render(ctx)?;
+			//render la partie gauche (2D)
 
 			match ray.min {
 				Some((point, _cible)) => {
 
-					mesh_line.line(&[ray.depart, point], 1.5);
+					let arr = Point2::from_coordinates(point - ray.depart);
+
+					mesh_line.line(&[Point2::origin(), arr], 1.5);
 
 					mesh_cible.circle(DrawMode::Fill, point, 2.0, 0.1);
 
 				},
 				None => {
 
-					mesh_line.line(&[ray.depart, ray.depart + ray.direction * 10.0 * SCENE_SIZE.0 as f32], 1.5);
+					let arr = Point2::from_coordinates((ray.depart + ray.direction * 10.0 * SCENE_SIZE.0 as f32) - ray.depart);
+
+					mesh_line.line(&[Point2::origin(), arr ], 1.5);
 
 				}
 			}
@@ -130,7 +135,10 @@ impl Camera{
 		let circle = mesh_cible.build(ctx)?;
 
 
-		graphics::draw(ctx, &vue, Point2::origin(), 0.0).unwrap();
+		graphics::set_color(ctx, [1.0, 1.0, 1.0, 1.0].into())?;
+		graphics::draw(ctx, &vue, self.position, 0.0).unwrap();
+
+		graphics::set_color(ctx, [0.5, 0.5, 0.0, 0.3].into())?;
 		graphics::draw(ctx, &circle, Point2::origin(), 0.0).unwrap();
 
 		Ok(())

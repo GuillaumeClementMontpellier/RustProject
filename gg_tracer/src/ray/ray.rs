@@ -39,16 +39,14 @@ impl<'a> Ray<'a> {
 
 	}
 
-	pub fn render_3d(&self, ctx: &mut Context, num: f32, width: f32, fish: bool) -> GameResult<()> {
+	pub fn height(&self, fish: bool) -> GameResult<f32> {
 
-		let x = SCENE_SIZE.0 as f32 + width * num;
-
-		let height = match self.min{
+		match self.min{
 			Some((pt, cible)) => {
 
 				// On change la idstance afin qu'elle soit comptée relative a la taille de la map (une constante)
 
-				let hauteur_diag = SCENE_SIZE.1 as f32 / 10.0;
+				let hauteur_diag = SCENE_SIZE.1 as f32 / 20.0;
 				//px : hauteur que l'on veut voir a la diagonale (hauteur min)
 
 				let longueur_diag = ((SCENE_SIZE.0 * SCENE_SIZE.0 + SCENE_SIZE.1 * SCENE_SIZE.1) as f32).sqrt();
@@ -80,15 +78,32 @@ impl<'a> Ray<'a> {
 				let mut col = cible.color().clone();
 
 				col.a = h * h / (SCENE_SIZE.1 * SCENE_SIZE.1) as f32;
-
-				graphics::set_color(ctx, col)?;
 				
-				h 
+				Ok(h) 
 			},
-			None => 0.0,
-		};
+			None => Ok(0.0),
+		}
+
+	}
+
+	pub fn render_3d(&self, ctx: &mut Context, num: f32, width: f32, fish: bool) -> GameResult<()> {
+
+		let x = SCENE_SIZE.0 as f32 + width * num;
+
+		let height = self.height(fish)?;
 
 		let y = (SCENE_SIZE.1 as f32 - height ) / 2.0;
+
+		if let Some((_pt, cible)) = self.min {
+			let mut col = cible.color().clone();
+
+			col.a = height * height / (SCENE_SIZE.1 as f32 * SCENE_SIZE.1 as f32);
+
+			graphics::set_color(ctx, col)?;
+
+		} else {
+			graphics::set_color(ctx, [1.0, 1.0, 1.0, 1.0].into())?;
+		}
 
 		match graphics::rectangle(ctx, DrawMode::Fill, Rect::new(x, y, width, height ) ){
 			Err(e) => { println!("erreur : {}", e)},
@@ -122,7 +137,7 @@ impl<'a> Ray<'a> {
 		Ok(())
 
 	}
-*/
+	*/
 	pub fn verify(&self, pt: Point2) -> Option<Point2> {
 
 		let vec1 = self.depart.coords;

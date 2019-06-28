@@ -36,6 +36,8 @@ impl Line{
 
 	pub fn draw(&self, ctx: &mut Context) -> GameResult<()>{
 
+		graphics::set_color(ctx, self.color)?;
+
 		graphics::line(ctx, &self.points, (SCENE_SIZE.0 + SCENE_SIZE.1) as f32 / 500.0)?;
 
 		Ok(())

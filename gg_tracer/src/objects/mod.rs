@@ -11,7 +11,7 @@ pub mod line;
 use line::Line;
 
 pub enum Element{
-	LineIntersect(Line),
+	Wall(Line),
 }
 
 pub trait Intersect{
@@ -27,7 +27,7 @@ impl Intersect for Element{
 
 	fn intersect(&self, ray: &Ray) -> Option<Point2>{
 		match self{
-			Element::LineIntersect(l) => l.intersect(ray),
+			Element::Wall(l) => l.intersect(ray),
 		}
 	}
 
@@ -37,13 +37,13 @@ impl  Element {
 
 	pub fn draw(&self, ctx: &mut Context) -> GameResult<()>{
 		match self{
-			Element::LineIntersect(l) => l.draw(ctx),
+			Element::Wall(l) => l.draw(ctx),
 		}
 	}
 
 	pub fn color(&self) -> Color{
 		match self{
-			Element::LineIntersect(l) => l.color,
+			Element::Wall(l) => l.color,
 		}
 	}
 }
