@@ -6,6 +6,6 @@ extern crate rand;
 // Bien sur, on utilise le jeu defini en librarie
 use ggez_snake::SnakeGame;
 
-fn main(){
-  SnakeGame::run();
+fn main() {
+    SnakeGame::run();
 }
