@@ -1,0 +1,51 @@
+name: kvs2
+author: GuillaumeClementPolytech <guillaume.clement@etu.umontpellier.fr>
+about: A key-value store 2
+version: "0.2.5"
+#args: 
+#    - config:
+#        short: c
+#        long: config
+#        value_name: FILE
+#        help: Sets a custom config file
+#        takes_value: true
+#    - INPUT:
+#        help: Sets the input file to use
+#        required: true
+#        index: 1
+#    - verbose:
+#        short: v
+#        multiple: true
+#        help: Sets the level of verbosity
+subcommands:
+    - get:
+        about: Get the value associated at the key
+        version: "0.1"
+        author: GuillaumeClementPolytech <guillaume.clement@etu.umontpellier.fr>
+        args:
+            - KEY:
+                help: Key concerned
+                required: true
+                index: 1
+    - rm:
+        about: Remove the key and the value associated at the key
+        version: "0.1"
+        author: GuillaumeClementPolytech <guillaume.clement@etu.umontpellier.fr>
+        args:
+            - KEY:
+                help: Key you want to remove
+                required: true
+                index: 1
+    - set:
+        about: Set a key / value pair
+        version: "0.1"
+        author: GuillaumeClementPolytech <guillaume.clement@etu.umontpellier.fr>
+        args:
+            - KEY:
+                help: Key you want to set
+                required: true
+                index: 1
+            - VALUE:
+                help: Values you want to set it
+                required: true
+                index: 2
