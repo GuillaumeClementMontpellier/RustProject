@@ -1,5 +1,5 @@
 //Attention, si cela depasse la longueur / largeur de l'ecran, sdl2 panic
-pub const SCREEN_SIZE: (u32, u32) = (1000,500);
+pub const SCREEN_SIZE: (u32, u32) = (1000, 500);
 
 pub const SCENE_SIZE: (u32, u32) = (SCREEN_SIZE.0 / 2, SCREEN_SIZE.1);
 
